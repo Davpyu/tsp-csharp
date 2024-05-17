@@ -18,16 +18,14 @@ foreach (KeyValuePair<(string, string), int> item in distances)
     Console.WriteLine($"Path: {item.Key.Item1} -> {item.Key.Item2}, Distance: {item.Value} KM");
 }
 
-List<List<string>> result = TspService.Run("Data Center", buildings, distances);
+TspService tspService = new("Data Center", buildings, distances);
 
-int totalLength = 0;
+List<(List<string>, int)> result = tspService.GetPaths();
 
 Console.WriteLine("Result:");
-foreach (var path in result)
+foreach ((List<string>, int) path in result)
 {
-    int pathLength = TspService.GetLengths(path, distances);
-    Console.WriteLine($"Path: {string.Join(" -> ", path)} Distance: {pathLength} KM");
-    totalLength += pathLength;
+    Console.WriteLine($"Path: {string.Join(" -> ", path.Item1)} Distance: {path.Item2} KM");
 }
 
-Console.WriteLine($"Total length: {totalLength}KM");
+Console.WriteLine($"Total length: {result.Sum(x => x.Item2)}KM");
