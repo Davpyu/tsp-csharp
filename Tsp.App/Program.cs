@@ -31,9 +31,9 @@ TspService tspService = new("Data Center", buildings, distances);
 List<(List<string>, int)> result = tspService.GetPaths();
 
 Console.WriteLine("Result:");
-foreach ((List<string>, int) path in result)
+foreach ((List<string> path, int length) in result)
 {
-    Console.WriteLine($"Path: {string.Join(" -> ", path.Item1)}, Distance: {path.Item2} KM");
+    Console.WriteLine($"Path: {string.Join(" -> ", path)}, Distance: {length} KM");
 }
 
 Console.WriteLine($"Total distance: {result.Sum(x => x.Item2)}KM");
