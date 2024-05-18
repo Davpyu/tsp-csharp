@@ -3,11 +3,11 @@ namespace Tsp.App.Services;
 public class TspService(
     string start,
     List<string> _buildings,
-    Dictionary<(string, string), int> _distances
+    List<Models.Path> _distances
 ) {
     private readonly string _start = start;
     private readonly List<string> _buildings = _buildings;
-    private readonly Dictionary<(string, string), int> _distances = _distances;
+    private readonly List<Models.Path> _distances = _distances;
 
     public List<(List<string>, int)> GetPaths()
     {
@@ -50,10 +50,9 @@ public class TspService(
 
         for (int i = 0; i < path.Count - 1; i++)
         {
-            (string, string) key = (path[i], path[i + 1]);
-            if (_distances.TryGetValue(key, out int value))
+            if (_distances.Any(x => x.From == path[i] && x.To == path[i + 1]))
             {
-                length += value;
+                length += _distances.First(x => x.From == path[i] && x.To == path[i + 1]).Length;
             }
         }
 
@@ -124,14 +123,11 @@ public class TspService(
 
             foreach (string neighbor in _buildings)
             {
-                // get key for variable distances to check if there is any relation from current building to current neighbor
-                (string, string) key = (current, neighbor);
-
                 // try to get distance from previous key and check if neighbor is unvisited or not
-                if (_distances.TryGetValue(key, out int value) && unvisited.Contains(neighbor))
+                if (_distances.Any(x => x.From == current && x.To == neighbor) && unvisited.Contains(neighbor))
                 {
                     // if found, add the distance with value from the condition before as new variable
-                    int alt = distance.First(x => x.Key == current).Value + value;
+                    int alt = distance.First(x => x.Key == current).Value + _distances.First(x => x.From == current && x.To == neighbor).Length;
                     int distanceNeighbor = distance.First(x => x.Key == neighbor).Value;
 
                     // if new variable is shorter than current distance from building to neighbor than replace it
